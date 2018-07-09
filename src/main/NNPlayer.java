@@ -4,32 +4,34 @@ import java.util.Arrays;
 
 public class NNPlayer extends Player {
 	int geneSize = 129; //is black:64 is white:64
-	int nodeSize = 128;
+	int nodeSize = 20;
 	int outSize = 16;
+
 	int[] gene = new int[129];
-	double[]  node = new double[129];
+	double[]  node = new double[20];
 	double[]  out = new double[16];
-	double[][] weight129 = new double[129][128];
-	double[][] weight16 = new double[16][128];
+	double[][] weightGene = new double[20][129];//[out][in]
+	double[][] weightOut = new double[16][20];
 
 
 	NNPlayer() {
-		for (int i = 0; i < 129; i++) {
-			for (int j = 0; j < 128; j++) {
-				weight129[i][j] = 2*Math.random()-1.0;
+
+		for (int i = 0; i < nodeSize; i++) {
+			for (int j = 0; j < geneSize; j++) {
+				weightGene[i][j] = 2*Math.random()-1.0;
 			}
 		}
 
 		for (int i = 0; i < 16; i++) {
-			for (int j = 0; j < 128; j++) {
-				weight16[i][j] = 2*Math.random()-1.0;
+			for (int j = 0; j < nodeSize; j++) {
+				weightOut[i][j] = 2*Math.random()-1.0;
 			}
 		}
 	}
 
 	NNPlayer(double[][] w129, double[][] w16) {
-		weight129 = Arrays.copyOf(w129, 129);
-		weight16  = Arrays.copyOf(w16 , 16 );
+		weightGene = Arrays.copyOf(w129, 20);
+		weightOut  = Arrays.copyOf(w16 , 16);
 	}
 
 	void setGene(Board b) {
@@ -50,12 +52,11 @@ public class NNPlayer extends Player {
 	@Override
 	void put(Board b) {
 		setGene(b);
-		double[] score = new double[16];
-		for (int i = 0; i < 129; i++) {
-			node[i] = ReLU(sum(gene, weight129[i]));
+		for (int i = 0; i < nodeSize; i++) {
+			node[i] = ReLU(sum(gene, weightGene[i]));
 		}
-		for (int i = 0; i < 16; i++) {
-			out[i] = ReLU(sum(node, weight16[i]));
+		for (int i = 0; i < outSize; i++) {
+			out[i] = ReLU(sum(node, weightOut[i]));
 		}
 		double max = 0;
 		int num = 0;

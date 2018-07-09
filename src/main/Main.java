@@ -17,25 +17,9 @@ public class Main {
 		p0.setColor(Color.BLACK);
 		p1.setColor(Color.WHITE);
 
-		boolean isRun = true;
-		Board board = new Board();
-
-		while (isRun) {
-			p0.put(board);
-			board.print();
-			System.out.println();
-			if (board.isWin()) {
-				System.out.println("win");
-				break;
-			}
-
-			p1.put(board);
-			board.print();
-			System.out.println();
-			if (board.isWin()) {
-				System.out.println("win");
-				break;
-			}
-		}
+		Game game = new Game();
+		game.setBoard(new Board());
+		game.setPlayers(p0, p1);
+		game.play();
 	}
 }
